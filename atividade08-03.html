@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Listagem de Bandas</title>
+    <meta charset="utf-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id='app'>
+        <div id="formulario">
+            <h2>Cadastro de bandas</h2>
+            <div id="linha1">
+                <input type='text' v-model='banda.nome' id="nome" placeholder="Nome">
+                <input type='text' v-model='banda.nacionalidade' id="nacionalidade" placeholder="Nacionalidade">
+                <input type='text' v-model='banda.genero' id="genero" placeholder="Gênero">
+            </div>
+            <div id="linha2">
+                <input type='text' v-model='banda.urlLogo' id="urlLogo" placeholder="Url da logo">
+                <input type='text' v-model='banda.website' id="website" placeholder="Website da banda">
+                <input type='number' v-model='banda.integrantes' id="integrantes" placeholder="Nº de integrantes fixos">
+                <button v-on:click="insere()">Insere</button>
+            </div>
+            
+        </div>
+        <div class="listagem">
+            <banda class="banda" v-for="b in bandas" 
+                :id="b.id"
+                :key="b.id"
+                :nome="b.nome" 
+                :nacionalidade="b.nacionalidade" 
+                :genero="b.genero" 
+                :urllogo="b.urlLogo" 
+                :website="b.website"
+                :integrantes="b.integrantes"
+                @remover-banda="remove" 
+            />
+        </div>
+    </div>
+</body>
+<script>
+    Vue.component('banda', {
+        props: ['id', 'nome', 'nacionalidade', 'genero', 'urllogo', 'website', 'integrantes'],
+        template:
+        `
+            <div>
+                <img :src="urllogo">
+                <p class="nome">Nome: {{nome}}</p>
+                <p class="nacionalidade">Nacionalidade: {{nacionalidade}}</p>
+                <p class="genero">Gênero: {{genero}}</p>
+                <a :href="website" class="website">{{website}}</a>
+                <p class="integrantes"> Integrantes fixos: {{integrantes}}</p>
+                <button class="btn_remove" @click="excluir(id)"> x </button>
+            </div>
+        `,
+        methods: {
+            excluir(id) {
+                this.$emit('remover-banda', id);
+            }
+        }
+    })
+    var app = new Vue({
+        el: '#app',
+        data: {            
+            bandas: [
+                { id: 0, nome: 'Slayer', nacionalidade: 'Estados Unidos', genero: 'Trash Metal', integrantes: 4, website: 'slayer.net', urlLogo: 'https://images.squarespace-cdn.com/content/v1/55ccf522e4b0fc9c2b651a5d/1439501203849-VHE9FD1TAJKZWUJPNTBA/Slayer_Logo_1000w.png?format=1500w' },
+                { id: 1, nome: 'Metallica', nacionalidade: 'Estados Unidos', genero: 'Heavy Metal', integrantes: 4, website: 'metallica.com', urlLogo: 'https://metallica.com/on/demandware.static/Sites-Metallica-Site/-/default/dw478e8429/images/header/logo-homepage.svg' },
+                { id: 2, nome: 'Red Hot Chilli Peppers', nacionalidade: 'Estados Unidos', genero: 'Funk Rock', integrantes: 4, website: 'redhotchilipeppers.com', urlLogo: 'https://d33wubrfki0l68.cloudfront.net/4562d851501b5112e6dd2a3504e00d0e0dc7a8dc/61e14/images/rhcp_neon-logo.png' },
+                { id: 3, nome: 'Rage Against The Machine', nacionalidade: 'Estados Unidos', genero: 'Rap Metal', integrantes: 4, website: 'www.ratm.com', urlLogo: 'https://www.ratm.com/wp-content/themes/ratm/assets/img/logo.png' },
+            ],
+            banda: {    
+                id: 4,
+                nome: '',
+                nacionalidade: '',
+                genero: '',
+                website: '',
+                urlLogo: '',
+                integrantes: ''
+            }
+        },
+        methods: {
+            insere() { 
+                if (this.banda.nome != "") {
+                    this.bandas.push(Object.assign({}, this.banda));
+                    this.banda.id++;
+                    this.banda.nome = '';
+                    this.banda.nacionalidade = '',
+                    this.banda.genero = '',
+                    this.banda.urlLogo = '',
+                    this.banda.website = '',
+                    this.banda.integrantes = ''
+                } else {
+                    alert("Insira os dados da banda");
+                }         
+            },
+            remove(id) {
+                this.bandas = this.bandas.filter(b => b.id !== id);
+             },
+        }
+    })
+</script>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-size: 10px;
+    }
+
+    #app {
+        width: 80%;
+        margin: 0 auto;
+    }
+
+    #formulario {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        border: 1px solid lightgray;
+        border-radius: 8px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    #formulario h2 {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    #formulario #linha1 {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        margin-bottom: 20px;
+    }
+
+    #formulario #linha2 {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        margin-bottom: 10px;
+    }
+
+    #formulario input {
+        padding: 2px;
+    }
+
+    #formulario #linha1 input {
+        width: 30%;
+    }
+
+    #formulario #linha2 input {
+        width: 25%;
+    }
+
+    #formulario button {
+        width: 15%;
+        padding: 2px;
+    }
+
+    .listagem {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .banda {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        background-color: lightgray;
+        margin: 10px 0;
+        padding: 10px;
+    }
+
+    .banda img {
+        width: 5%;
+    }
+
+    .banda .nome {
+        width: 20%;
+    }
+
+    .banda .nacionalidade {
+        width: 20%;
+    }
+
+    .banda .genero {
+        width: 20%;
+    }
+
+    .banda .website {
+        width: 15%;
+    }
+
+    .banda .btn_remove {
+        width: 3%;
+    }
+
+    @media (min-width: 800px)
+    {
+        *
+        {
+            font-size: 12px;
+        }
+    }
+
+    @media (min-width: 1000px)
+    {
+        *
+        {
+            font-size: 14px;
+        }
+    }
+
+    @media (min-width: 1200px)
+    {
+        *
+        {
+            font-size: 16px;
+        }
+    }
+
+    
+</style>
+</html>
